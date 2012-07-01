@@ -166,8 +166,14 @@ $tpl = eFormParseTemplate($tpl,$isDebug);
 			if(is_array($value)){
 				//remove empty values
 				$fields[$name] = array_filter($value,create_function('$v','return (!empty($v));'));
-			} else
-				$fields[$name]	= stripslashes(($allowhtml || $formats[$name][2]=='html')? $value:$modx->stripTags($value));
+			} else {
+				$value = htmlspecialchars($value, ENT_QUOTES, $modx->config['modx_charset']);
+				if ($allowhtml || $formats[$name][2]=='html') {
+					$fields[$name] = stripslashes($value);
+				} else {
+					$fields[$name] = strip_tags(stripslashes($value));
+				}
+			}
 		}
 
 		# get uploaded files
